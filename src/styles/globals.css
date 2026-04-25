@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+/* ──────────────────────────────────────────────────────────
+   Design tokens — "Quiet Lab"
+   Editorial-minimal. One accent. Hairlines, not shadows.
+   ────────────────────────────────────────────────────────── */
+
+@theme {
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  --color-bg: #0b0b0c;
+  --color-bg-elev: #141416;
+  --color-fg: #edeae3;
+  --color-fg-muted: #8a867e;
+  --color-rule: #2a2a2d;
+  --color-accent: #b8ff5c;
+
+  --spacing-section: 96px;
+}
+
+:root {
+  color-scheme: dark;
+  --bg: #0b0b0c;
+  --bg-elev: #141416;
+  --fg: #edeae3;
+  --fg-muted: #8a867e;
+  --rule: #2a2a2d;
+  --accent: #b8ff5c;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f6f4ee;
+  --bg-elev: #ffffff;
+  --fg: #14140f;
+  --fg-muted: #5a574e;
+  --rule: #d8d4c8;
+  --accent: #1f6b00;
+}
+
+* {
+  border-color: var(--rule);
+}
+
+html {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-feature-settings: "ss01", "cv11";
+  transition: background-color 280ms ease, color 280ms ease;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* Hairline divider */
+.rule {
+  height: 1px;
+  width: 100%;
+  background: var(--rule);
+}
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Headline display */
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.022em;
+  line-height: 1.02;
+  font-variation-settings: "opsz" 144, "SOFT" 30;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-feature-settings: "ss02", "cv11";
+}
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+/* Reading column */
+.reading {
+  max-width: 68ch;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
