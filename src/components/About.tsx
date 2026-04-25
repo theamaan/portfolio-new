@@ -1,4 +1,4 @@
-import { Container, SectionLabel } from "../primitives";
+import { Container, SectionLabel } from "./primitives";
 
 export function About() {
   return (

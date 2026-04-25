@@ -145,7 +145,7 @@ The UI is intentionally boring: upload, ask, read the answer with [p.42]-style c
       approach: `The codebase is split into Domain, Application, Infrastructure, and Web layers. Domain holds entities and rules. Application holds use-cases and contracts. Infrastructure implements persistence and external concerns. Web is just a delivery mechanism. The dependency arrows all point inward.`,
       decisions: [
         {
-          title: "Clean architecture, not "clean" architecture",
+          title: 'Clean architecture, not "clean" architecture',
           body: `It is easy to draw the four boxes and still leak EF Core types into the domain. The discipline was making domain code framework-free and proving it by swapping the persistence layer in tests.`,
         },
         {
