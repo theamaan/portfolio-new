@@ -214,7 +214,7 @@ The UI is intentionally boring: upload, ask, read the answer with [p.42]-style c
     sections: {
       problem: `Most weather dashboards are either generic web interfaces or mobile-only. I wanted something that felt genuinely beautiful — adaptive atmospheric theming, smooth micro-interactions, responsive across devices — without a massive framework or slow builds. And critically, the OpenWeather API key had to never ship to the browser.`,
       constraint: `Zero npm dependencies for the frontend. The app had to build instantly, run from any server, and render perfectly on phones, tablets, and desktops. Real-time weather data with visual feedback, but the API secret stays locked on the server. Every interaction had to feel responsive.`,
-      approach: `I built the frontend in vanilla JavaScript with modern CSS (Grid, custom properties, backdrop-filter). The server is a simple Node.js proxy that exposes a `/api/weather` endpoint — the browser calls that, never OpenWeather directly. The UI is event-driven: geolocation triggers a request, city search is debounced, data arrival updates the DOM with transitions. CSS custom properties let the theme adapt to weather conditions — darker skies, warmer tones for heat, cooler blues for cold. Pointer events on the background add subtle parallax motion.`,
+      approach: `I built the frontend in vanilla JavaScript with modern CSS (Grid, custom properties, backdrop-filter). The server is a simple Node.js proxy that exposes a /api/weather endpoint — the browser calls that, never OpenWeather directly. The UI is event-driven: geolocation triggers a request, city search is debounced, data arrival updates the DOM with transitions. CSS custom properties let the theme adapt to weather conditions — darker skies, warmer tones for heat, cooler blues for cold. Pointer events on the background add subtle parallax motion.`,
       decisions: [
         {
           title: "Vanilla JavaScript, not a framework",
@@ -226,7 +226,7 @@ The UI is intentionally boring: upload, ask, read the answer with [p.42]-style c
         },
         {
           title: "Server-side API proxy, not CORS",
-          body: `Putting the API key in the browser is a security anti-pattern. The server proxies all requests. The frontend talks to `/api/weather`, the server talks to OpenWeather. Cleaner, safer, and easier to rate-limit or cache.`,
+          body: `Putting the API key in the browser is a security anti-pattern. The server proxies all requests. The frontend talks to /api/weather, the server talks to OpenWeather. Cleaner, safer, and easier to rate-limit or cache.`,
         },
         {
           title: "Local storage for recent searches",
