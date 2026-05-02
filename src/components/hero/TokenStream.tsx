@@ -1,17 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { tokenSnippets } from "@/lib/tokens";
+import { tokenSnippets, type RoleType } from "@/lib/tokens";
 
 /**
  * Behind-the-headline streaming "model output".
  * Looks like real tokens being emitted. Pauses on hover. Loops.
- * Respects prefers-reduced-motion.
+ * Respects prefers-reduced-motion. Role-aware.
  */
-export function TokenStream() {
+export function TokenStream({ role }: { role: RoleType }) {
   const [text, setText] = useState("");
+  const snippets = tokenSnippets[role];
   const [snippetIndex, setSnippetIndex] = useState(() =>
-    Math.floor(Math.random() * tokenSnippets.length),
+    Math.floor(Math.random() * snippets.length),
   );
   const pausedRef = useRef(false);
   const reducedRef = useRef(false);
@@ -21,12 +22,12 @@ export function TokenStream() {
     reducedRef.current = mql.matches;
 
     if (reducedRef.current) {
-      setText(tokenSnippets[snippetIndex]);
+      setText(snippets[snippetIndex]);
       return;
     }
 
     let cancelled = false;
-    const snippet = tokenSnippets[snippetIndex];
+    const snippet = snippets[snippetIndex];
     let i = 0;
     let raf = 0;
     let last = performance.now();
@@ -54,8 +55,8 @@ export function TokenStream() {
           // pick next, avoid repeats
           setSnippetIndex((prev) => {
             let next = prev;
-            while (next === prev && tokenSnippets.length > 1) {
-              next = Math.floor(Math.random() * tokenSnippets.length);
+            while (next === prev && snippets.length > 1) {
+              next = Math.floor(Math.random() * snippets.length);
             }
             return next;
           });
@@ -71,7 +72,7 @@ export function TokenStream() {
       cancelled = true;
       cancelAnimationFrame(raf);
     };
-  }, [snippetIndex]);
+  }, [snippetIndex, snippets]);
 
   return (
     <pre

@@ -1,8 +1,14 @@
+"use client";
+
 import Link from "next/link";
 import { Container, SectionLabel } from "./primitives";
 import { projects } from "@/lib/projects";
+import { useSite } from "@/lib/site-context";
 
 export function Work() {
+  const { role } = useSite();
+  const roleProjects = projects.filter((p) => p.role === role);
+
   return (
     <section id="work" className="border-b border-[var(--rule)] py-24 md:py-32">
       <Container>
@@ -10,7 +16,7 @@ export function Work() {
 
         <div className="mt-12 flex items-end justify-between flex-wrap gap-6">
           <h2 className="display text-[36px] md:text-[56px] max-w-[18ch]">
-            Four projects. <span className="text-[var(--fg-muted)]">All shipped, or shipping.</span>
+            {roleProjects.length} projects. <span className="text-[var(--fg-muted)]">All shipped, or shipping.</span>
           </h2>
           <p className="mono text-[12px] text-[var(--fg-muted)] max-w-[28ch]">
             Pick one. Each row opens into a case study with the trade-offs, not the brochure.
@@ -18,7 +24,7 @@ export function Work() {
         </div>
 
         <ul className="mt-16 border-t border-[var(--rule)]">
-          {projects.map((p) => (
+          {roleProjects.map((p) => (
             <li key={p.slug} className="border-b border-[var(--rule)]">
               <Link
                 href={`/work/${p.slug}`}

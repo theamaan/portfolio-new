@@ -197,6 +197,102 @@ The UI is intentionally boring: upload, ask, read the answer with [p.42]-style c
       { what: "Analytics queries hitting write tables directly", changed: "Flagged for read-model refactor in next iteration", learned: "Read and write models should diverge early; retrofitting later is painful." },
     ],
   },
+
+  "atmos-cinematic-weather": {
+    number: "05",
+    title: "Atmos — Cinematic Weather",
+    year: "2024",
+    role: "Personal project",
+    oneLiner:
+      "A vanilla JavaScript weather dashboard with adaptive atmospheric theming, real-time data visualization, interactive cards, and a zero-dependency Node proxy server for secure API key handling.",
+    stack: ["Vanilla JavaScript", "Node.js", "OpenWeather API", "CSS motion", "Responsive design"],
+    metrics: [
+      { value: "zero deps", label: "frontend, no build step" },
+      { value: "secure proxy", label: "API key server-side only" },
+      { value: "cinematic UX", label: "motion, theme, interactivity" },
+    ],
+    sections: {
+      problem: `Most weather dashboards are either generic web interfaces or mobile-only. I wanted something that felt genuinely beautiful — adaptive atmospheric theming, smooth micro-interactions, responsive across devices — without a massive framework or slow builds. And critically, the OpenWeather API key had to never ship to the browser.`,
+      constraint: `Zero npm dependencies for the frontend. The app had to build instantly, run from any server, and render perfectly on phones, tablets, and desktops. Real-time weather data with visual feedback, but the API secret stays locked on the server. Every interaction had to feel responsive.`,
+      approach: `I built the frontend in vanilla JavaScript with modern CSS (Grid, custom properties, backdrop-filter). The server is a simple Node.js proxy that exposes a `/api/weather` endpoint — the browser calls that, never OpenWeather directly. The UI is event-driven: geolocation triggers a request, city search is debounced, data arrival updates the DOM with transitions. CSS custom properties let the theme adapt to weather conditions — darker skies, warmer tones for heat, cooler blues for cold. Pointer events on the background add subtle parallax motion.`,
+      decisions: [
+        {
+          title: "Vanilla JavaScript, not a framework",
+          body: `React or Vue would have made state management easier but would have added a build step and bloat. For a dashboard with a flat state model (current conditions + forecast), vanilla was faster, cleaner, and genuinely more performant.`,
+        },
+        {
+          title: "Adaptive theming via CSS variables",
+          body: `Instead of hard-coded colors, every visual property — background gradients, text colors, card shadows — comes from a CSS custom property set by JavaScript based on temperature, cloud cover, and time of day. Same DOM, different theme. No repaint overhead.`,
+        },
+        {
+          title: "Server-side API proxy, not CORS",
+          body: `Putting the API key in the browser is a security anti-pattern. The server proxies all requests. The frontend talks to `/api/weather`, the server talks to OpenWeather. Cleaner, safer, and easier to rate-limit or cache.`,
+        },
+        {
+          title: "Local storage for recent searches",
+          body: `Users want to quickly re-check weather for places they visit often. localStorage keeps a history without a backend database. Simple, persistent, fast.`,
+        },
+      ],
+      different: `I would add offline fallback with cached data, and push harder on the air quality integration — right now it's a gauge, but it could be tied to visual severity indicators (card color, motion intensity) to make the data more visceral.`,
+    },
+    evidence: [
+      { metric: "Instant load, no build", proof: "Plain HTML + CSS + JS, zero transpilation", confidence: "By design" },
+      { metric: "Adaptive theme per weather", proof: "CSS variables updated on data arrival", confidence: "Demonstrated" },
+      { metric: "API key server-side only", proof: "Node proxy, browser never touches secret", confidence: "Verified" },
+    ],
+    failureLog: [
+      { what: "CORS errors when calling OpenWeather directly from browser", changed: "Added Node server as API proxy", learned: "Never expose API keys to the client, even if CORS would technically work." },
+      { what: "Hard-coded theme felt static in bad weather", changed: "Switched to dynamic CSS variables tied to conditions", learned: "Theme should respond to data, not preconfigure it." },
+    ],
+  },
+
+  "data-lineage-impact-analysis": {
+    number: "06",
+    title: "Data Lineage & Impact Analysis",
+    year: "2024",
+    role: "Personal project",
+    oneLiner:
+      "An open-source tool that auto-parses SQL transformations into a lineage graph, calculates impact scores for changes, and provides an interactive Streamlit dashboard with optional AI-powered SQL explanations.",
+    stack: ["Python", "sqlglot", "NetworkX", "SQLite", "Streamlit", "Graphviz"],
+    metrics: [
+      { value: "100% open", label: "no premium tiers, no licenses" },
+      { value: "column-level", label: "lineage tracking" },
+      { value: "impact scoring", label: "BFS traversal, depth weighting" },
+    ],
+    sections: {
+      problem: `Data teams spend way too much time asking "if I change this table, what breaks?" Usually they answer by grepping logs or asking colleagues who also don't know. When a schema change hits production, half the team scrambles. I wanted a tool that answers the question automatically, at scale, with no premium tier or API key.`,
+      constraint: `The tool had to work entirely offline. No cloud database, no external service calls (except optional Ollama). It had to parse real SQL dialects (Spark, T-SQL, BigQuery flavors), build a fast in-memory graph, and explain impact in human terms. Most importantly, it had to be so easy to use that data teams would actually adopt it — point it at a SQL file, get a dashboard, done.`,
+      approach: `The pipeline uses sqlglot to parse SQL statements into an AST, extracting table and column dependencies. Each transformation becomes a node in a directed graph built with NetworkX. When you ask "what breaks if I change raw_claims?" the system does a breadth-first search from that table, scoring each dependent table by its depth in the DAG. Closer dependencies score higher (1.0 for direct, 0.5 for one hop, 0.333 for two hops). The score becomes the basis for impact urgency. The Streamlit dashboard visualizes the graph with Graphviz, lets you drill into any table, and optionally calls Ollama to generate human-readable SQL explanations.`,
+      decisions: [
+        {
+          title: "sqlglot for dialect-agnostic parsing",
+          body: `Different teams use different SQL dialects (Spark SQL, BigQuery, T-SQL). Instead of building n parsers, sqlglot abstracts them into a common AST. Write the logic once, works everywhere.`,
+        },
+        {
+          title: "Impact scoring by depth, not just presence",
+          body: `Saying "this table depends on raw_claims" is useful. Saying "it depends directly (score 1.0) vs. through two intermediates (score 0.25)" is critical for prioritization. Teams fix high-impact breaks first.`,
+        },
+        {
+          title: "Streamlit for the dashboard, not a custom web app",
+          body: `Streamlit makes interactive Python dashboards with 10 lines of code. The alternative is Flask templates, React, etc. For data teams already in Python/Jupyter, Streamlit is the path of least resistance.`,
+        },
+        {
+          title: "Optional Ollama for SQL explanation",
+          body: `Not every team has an LLM running locally. The tool works fully without Ollama. But if Ollama is running, asking "explain what this SQL does in plain English" becomes free. It's a nice-to-have, not a requirement.`,
+        },
+      ],
+      different: `I would add versioning — track how lineage changes over time, so you can answer "when did this column stop flowing to the risk model?" Currently it's a point-in-time snapshot. Time-series lineage would unlock so much debugging.`,
+    },
+    evidence: [
+      { metric: "Column-level lineage", proof: "sqlglot AST extracts columns, not just tables", confidence: "By design" },
+      { metric: "Multi-dialect SQL support", proof: "Tested on Spark, BigQuery, T-SQL sample", confidence: "Verified" },
+      { metric: "Zero external dependencies for core", proof: "Only Python stdlib + sqlglot + NetworkX + sqlite3", confidence: "Verified" },
+    ],
+    failureLog: [
+      { what: "Table-level lineage only missed column-level impact", changed: "Extended sqlglot parsing to track SELECT columns", learned: "Impact analysis at table granularity is coarse; columns matter more than whole tables." },
+      { what: "Graph could get huge, slow traversal", changed: "Added scoring cutoff (only show impact > 0.1)", learned: "Not all dependencies matter equally; weighting by depth filters noise." },
+    ],
+  },
 } as const;
 
 export type CaseStudySlug = keyof typeof caseStudies;

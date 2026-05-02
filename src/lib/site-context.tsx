@@ -30,4 +30,4 @@ export function SiteProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export const useSite = () => useContext(SiteContext);
+export const useSite = (): SiteCtx => useContext(SiteContext);

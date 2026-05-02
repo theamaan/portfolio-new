@@ -30,6 +30,8 @@ export function CommandPalette() {
     { id: "p2",         label: "Open: Healthcare RAG Assistant", hint: "Case study 02", action: () => router.push("/work/healthcare-rag-assistant") },
     { id: "p3",         label: "Open: AI Meeting Intelligence",  hint: "Case study 03", action: () => router.push("/work/ai-meeting-automation-guide") },
     { id: "p4",         label: "Open: Employee Management",      hint: "Case study 04", action: () => router.push("/work/employee-management-system") },
+    { id: "p5",         label: "Open: Atmos Weather",            hint: "Case study 05", action: () => router.push("/work/atmos-cinematic-weather") },
+    { id: "p6",         label: "Open: Data Lineage",             hint: "Case study 06", action: () => router.push("/work/data-lineage-impact-analysis") },
     {
       id: "email",
       label: "Copy email address",

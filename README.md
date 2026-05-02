@@ -1,14 +1,23 @@
-# amanullah.dev — portfolio
+# amanullah.dev - portfolio
 
-Personal portfolio. Editorial-minimal. One signature interaction (the live token stream behind the hero). Built around 4 case studies, not a card grid.
+Personal portfolio with role-aware storytelling. The Hero toggle (AI / LLM, Backend, Data) changes key content blocks so each view feels purpose-built.
+
+## Current behavior
+
+- Role toggle in Hero controls:
+	- Hero headline and subcopy
+	- Live Model Output snippets (right rail)
+	- About section copy + Now card
+	- Selected Work project list
+- Experience, Capabilities, and Contact remain shared across roles.
+- Case studies are typed TypeScript objects (no CMS, no MDX).
 
 ## Stack
 
-- **Next.js 15** (App Router) · React 19 · TypeScript
-- **Tailwind CSS v4** (CSS-first `@theme`)
-- **animejs** + **animatry** for motion
-- **MDX** ready (case studies are typed TS objects today; switch to MDX when you start writing)
-- **Vercel** for hosting (works on Netlify too)
+- Next.js 15 (App Router) + React 19 + TypeScript
+- Tailwind CSS v4 (CSS-first @theme)
+- Local UI state via React Context (`src/lib/site-context.tsx`)
+- Static content in `src/lib/*.ts`
 
 ## Get running
 
@@ -17,55 +26,80 @@ npm install
 npm run dev
 ```
 
-Then open http://localhost:3000
+Open http://localhost:3000
 
 ## Project layout
 
-```
+```text
 src/
-├─ app/
-│  ├─ layout.tsx                 root layout, fonts, metadata
-│  ├─ page.tsx                   home (hero, about, work, timeline, capabilities, contact)
-│  ├─ work/[slug]/page.tsx       case study route
-│  ├─ opengraph-image.tsx        dynamic OG image
-│  ├─ sitemap.ts · robots.ts
-│  └─ not-found.tsx
-├─ components/
-│  ├─ hero/Hero.tsx + TokenStream.tsx     ← signature interaction
-│  ├─ About.tsx · Work.tsx · Timeline.tsx
-│  ├─ Capabilities.tsx · Contact.tsx · Footer.tsx
-│  ├─ CaseStudy.tsx
-│  ├─ Nav.tsx · ThemeToggle.tsx · primitives.tsx
-├─ lib/
-│  ├─ projects.ts · timeline.ts · capabilities.ts
-│  ├─ tokens.ts                  snippets streamed in the hero
-│  └─ case-studies.ts            full content for each project
-└─ styles/globals.css            tokens, theme, base styles
+|- app/
+|  |- layout.tsx
+|  |- page.tsx
+|  |- opengraph-image.tsx
+|  |- work/[slug]/page.tsx
+|  |- work/[slug]/opengraph-image.tsx
+|  |- sitemap.ts
+|  |- robots.ts
+|  \- not-found.tsx
+|- components/
+|  |- hero/Hero.tsx
+|  |- hero/TokenStream.tsx
+|  |- About.tsx
+|  |- Work.tsx
+|  |- CaseStudy.tsx
+|  |- CommandPalette.tsx
+|  |- RecruiterMode.tsx
+|  |- Nav.tsx
+|  |- Timeline.tsx
+|  |- Capabilities.tsx
+|  |- Contact.tsx
+|  \- Footer.tsx
+|- lib/
+|  |- site-context.tsx
+|  |- projects.ts
+|  |- case-studies.ts
+|  |- tokens.ts
+|  |- timeline.ts
+|  \- capabilities.ts
+\- styles/globals.css
 ```
+
+## Portfolio projects (6)
+
+### AI / LLM
+
+1. AI Letter Translator
+2. Healthcare RAG Document Assistant
+3. AI Meeting Intelligence System
+
+### Backend
+
+4. Employee Management System
+5. Atmos - Cinematic Weather
+
+### Data
+
+6. Data Lineage & Impact Analysis
 
 ## Editing content
 
-- **Hero copy** → `src/components/hero/Hero.tsx`
-- **About copy + Now card** → `src/components/About.tsx`
-- **Project list (work index)** → `src/lib/projects.ts`
-- **Case studies** → `src/lib/case-studies.ts`
-- **Experience timeline** → `src/lib/timeline.ts`
-- **Capabilities** → `src/lib/capabilities.ts`
-- **Token-stream snippets** → `src/lib/tokens.ts`
+- Hero role messaging: `src/components/hero/Hero.tsx`
+- Role-specific About copy: `src/components/About.tsx`
+- Role-specific token stream snippets: `src/lib/tokens.ts`
+- Project metadata + role mapping: `src/lib/projects.ts`
+- Case study content: `src/lib/case-studies.ts`
+- Shared timeline and capabilities: `src/lib/timeline.ts`, `src/lib/capabilities.ts`
+
+## Keyboard + recruiter shortcuts
+
+- Command Palette: press `/` or `Ctrl+K`
+- Recruiter Mode toggle: top navigation button
 
 ## Resume
 
-Drop your real PDF at `public/aman-ullah-resume.pdf`. The contact section already links to it.
+Place your resume at `public/aman-ullah-resume.pdf`.
 
-## Deploying
+## Deploy
 
-- **Vercel** — push to GitHub, import the repo, hit deploy.
-- **Netlify** — same, with the Next.js build command.
-
-## Iteration prompts (save these for later refinement)
-
-See the PRD for the full prompts. Three to keep handy:
-
-1. *Improve Projects Section Prompt* — refine an individual case study.
-2. *Rewrite About Section Prompt* — keep the voice from drifting back into LinkedIn-speak.
-3. *Make Design More Unique Prompt* — audit against anti-patterns and propose one new memorable moment.
+- Vercel: import repo and deploy
+- Netlify: import repo and deploy with Next.js defaults

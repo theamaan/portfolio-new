@@ -88,7 +88,7 @@ export function Hero() {
                 live · model output
               </div>
               <div className="max-h-[260px] overflow-hidden opacity-80">
-                <TokenStream />
+                <TokenStream role={role} />
               </div>
             </div>
           </aside>
