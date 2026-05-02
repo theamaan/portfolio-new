@@ -28,7 +28,7 @@ export function CommandPalette() {
     { id: "contact",    label: "Go to Contact",       hint: "Email + links",           action: () => scrollTo("contact") },
     { id: "p1",         label: "Open: AI Letter Translator",     hint: "Case study 01", action: () => router.push("/work/ai-letter-translator") },
     { id: "p2",         label: "Open: Healthcare RAG Assistant", hint: "Case study 02", action: () => router.push("/work/healthcare-rag-assistant") },
-    { id: "p3",         label: "Open: Standup Generator",        hint: "Case study 03", action: () => router.push("/work/standup-report-generator") },
+    { id: "p3",         label: "Open: AI Meeting Intelligence",  hint: "Case study 03", action: () => router.push("/work/ai-meeting-automation-guide") },
     { id: "p4",         label: "Open: Employee Management",      hint: "Case study 04", action: () => router.push("/work/employee-management-system") },
     {
       id: "email",

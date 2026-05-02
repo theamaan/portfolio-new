@@ -110,47 +110,47 @@ The UI is intentionally boring: upload, ask, read the answer with [p.42]-style c
     ],
   },
 
-  "standup-report-generator": {
+  "ai-meeting-automation-guide": {
     number: "03",
-    title: "Standup Report Generator",
-    year: "2025",
+    title: "AI Meeting Intelligence System",
+    year: "2026",
     role: "Personal project",
     oneLiner:
-      "Paste a messy standup transcript, get a clean per-speaker report — yesterday, today, blockers, action items.",
-    stack: ["Python", "Open-source LLM", "Web UI", "Clipboard export"],
+      "A local-first, enterprise-grade meeting automation system that converts Teams recordings into per-person MOM, sends interactive Adaptive Cards to Teams, and dispatches formatted HTML email summaries.",
+    stack: ["Python", "Ollama", "watchdog", "Adaptive Cards", "SQLite", "Jinja2"],
     metrics: [
-      { value: "1", label: "paste, no formatting required" },
-      { value: "per-speaker", label: "structured output" },
-      { value: "auto", label: "action-item extraction" },
+      { value: "5 min", label: "sync-safe processing delay" },
+      { value: "3", label: "input formats (.vtt, .docx, .mp4)" },
+      { value: "local-first", label: "no cloud dependency" },
     ],
     sections: {
-      problem: `Daily standups produce a lot of words and very little structure. Someone, usually the same someone, ends up turning the recording into a written report. It is the least loved task on the team.`,
-      constraint: `The transcript is unstructured, names are inconsistent ("John", "John D.", "JD"), people interrupt each other, and the output has to be skimmable at the end of a long day. A naive summary loses the per-person detail that makes a standup report useful in the first place.`,
-      approach: `The pipeline first identifies speakers and groups their turns, then asks the model to extract a small structured schema per person — yesterday, today, blockers — and a separate pass for action items and an executive summary. The UI is a single textarea and a copy-to-clipboard button. That is the entire product.`,
+      problem: `Teams meetings create a lot of operational knowledge, but most teams lose it within hours. Notes are inconsistent, action items disappear in chat scrollback, and reporting still depends on someone manually summarizing transcripts. I wanted a system that could turn raw recordings into structured MOM without adding another SaaS dependency.`,
+      constraint: `The system had to run locally, tolerate enterprise environments, and handle messy real-world inputs. Files arrive through OneDrive and can remain incomplete while syncing. Transcript quality varies across .vtt, .docx, and raw .mp4 sources. Output had to be deterministic JSON suitable for downstream notifications and audit storage.`,
+      approach: `I built a modular pipeline around a file watcher and strict structured output. New files in the OneDrive folder are held with a delay timer to avoid partial reads. Parser logic chooses the best available source (.vtt first, then .docx, then Whisper on .mp4). The LLM layer enforces JSON-only MOM per person, then fans out to Teams Adaptive Cards, HTML email, and SQLite audit logging.`,
       decisions: [
         {
-          title: "Schema first, prose second",
-          body: `Asking for structured fields per speaker before any free-form summary made the output dramatically more reliable. The summary is a derived view over the structure, not the other way around.`,
+          title: "Delay-and-reset file ingestion",
+          body: `OneDrive sync made immediate processing unreliable. A 5-minute delay with reset-on-change avoided parsing half-written recordings and cut flaky runs during upload windows.`,
         },
         {
-          title: "Speaker grouping is its own step",
-          body: `Trying to do speaker identification, extraction, and summarization in a single prompt was a coin flip. Splitting them made each step debuggable and made model swaps cheap.`,
+          title: "Strict JSON enforcement around LLM output",
+          body: `I treated model output as untrusted text until validated. The pipeline strips fences, finds JSON boundaries, repairs minor syntax drift, validates required keys, retries with backoff, and falls back safely if needed.`,
         },
         {
-          title: "Open-source LLM by default",
-          body: `Standup transcripts often contain things people would not want in a third-party log. Defaulting to a local or open-source model removes the question.`,
+          title: "Interactive delivery, not static summaries",
+          body: `Teams Adaptive Cards with Action.ToggleVisibility let users expand per-person updates directly in channel without extra backend calls. This made the output actionable where teams already work.`,
         },
       ],
-      different: `Speaker diarization is the weakest link. Next iteration would either ingest properly diarized transcripts directly from the meeting tool or use a small specialised model for that step instead of leaning on the LLM to guess.`,
+      different: `I would add a first-class evaluation suite for long meetings and noisy transcripts from day one, including regression fixtures for participant normalization and JSON validity under stress. The recovery logic is strong, but automated quality gates would make model or prompt upgrades safer.`,
     },
     evidence: [
-      { metric: "Per-speaker structured output",  proof: "Live demo on real transcript",     confidence: "Demonstrated" },
-      { metric: "Auto action-item extraction",    proof: "Schema-driven extraction pass",    confidence: "By design" },
-      { metric: "Single paste UX",                proof: "No pre-formatting required",       confidence: "Verified" },
+      { metric: "Idempotent processing",        proof: "SQLite + INSERT OR IGNORE duplicate protection", confidence: "Verified" },
+      { metric: "Real-time channel delivery",   proof: "Teams webhook Adaptive Card notifier",             confidence: "Demonstrated" },
+      { metric: "Multi-format ingestion",       proof: "Parser priority: .vtt -> .docx -> .mp4",          confidence: "By design" },
     ],
     failureLog: [
-      { what: "Single-prompt approach mixed up speakers", changed: "Split into grouping then extraction steps", learned: "Each step being debuggable independently saves more time than a single clever prompt." },
-      { what: "Summary was generated before per-speaker extraction", changed: "Made summary a derived view over structured data", learned: "Structure first, prose second — always." },
+      { what: "File watcher triggered while OneDrive upload was still in progress", changed: "Added delayed processing with reset-on-change behavior", learned: "Sync-aware ingestion is non-negotiable in enterprise file flows." },
+      { what: "LLM occasionally returned malformed JSON wrappers", changed: "Added boundary extraction, repair step, and retry/fallback pipeline", learned: "Production LLM systems need post-processing contracts, not blind parsing." },
     ],
   },
 

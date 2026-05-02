@@ -33,14 +33,14 @@ export const projects: Project[] = [
   },
   {
     number: "03",
-    slug: "standup-report-generator",
-    title: "Standup Report Generator",
-    year: "2025",
+    slug: "ai-meeting-automation-guide",
+    title: "AI Meeting Intelligence System",
+    year: "2026",
     blurb:
-      "Paste a messy standup transcript, get a clean per-speaker report — yesterday, today, blockers, action items. Built because I was tired of writing them by hand.",
-    pullQuote: "Open-source LLMs doing the part of the meeting nobody wants.",
-    stack: ["python", "open-source llm", "fastapi", "web ui"],
-    github: "https://github.com/theamaan",
+      "Local-first meeting automation pipeline that processes Teams recordings into per-person MOM JSON, posts interactive Adaptive Cards to Teams, and sends clean HTML summaries by email.",
+    pullQuote: "No cloud dependency. No data leaves your machine.",
+    stack: ["python", "ollama", "adaptive cards", "sqlite"],
+    github: "https://github.com/theamaan/AI-Meeting-Automation-Guide",
   },
   {
     number: "04",
