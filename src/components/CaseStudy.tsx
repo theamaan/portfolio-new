@@ -3,6 +3,13 @@ import { Container } from "./primitives";
 import type { CaseStudySlug } from "@/lib/case-studies";
 import { caseStudies } from "@/lib/case-studies";
 
+type EvidenceRow = { metric: string; proof: string; confidence: string };
+type FailureRow  = { what: string; changed: string; learned: string };
+type CaseStudyWithExtras = (typeof caseStudies)[CaseStudySlug] & {
+  evidence?: EvidenceRow[];
+  failureLog?: FailureRow[];
+};
+
 export function CaseStudy({ slug }: { slug: CaseStudySlug }) {
   const cs = caseStudies[slug];
 
@@ -86,6 +93,46 @@ export function CaseStudy({ slug }: { slug: CaseStudySlug }) {
 
         <Side label="05 what i'd do differently" />
         <Body>{cs.sections.different}</Body>
+
+        {/* Evidence panel */}
+        <Side label="06 evidence" />
+        <div className="lg:col-span-9">
+          <div className="grid grid-cols-1 sm:grid-cols-3 border border-[var(--rule)] divide-y sm:divide-y-0 sm:divide-x divide-[var(--rule)]">
+            {(cs as CaseStudyWithExtras).evidence?.map((e) => (
+              <div key={e.metric} className="p-5 space-y-2">
+                <div className="display text-[22px] md:text-[26px] leading-tight">{e.metric}</div>
+                <div className="text-[13px] text-[var(--fg-muted)]">{e.proof}</div>
+                <div className={`mono text-[10px] uppercase tracking-[0.14em] px-2 py-0.5 inline-block ${
+                  e.confidence === "Verified" || e.confidence === "Measured"
+                    ? "bg-[var(--accent)] text-[var(--bg)]"
+                    : "border border-[var(--rule)] text-[var(--fg-muted)]"
+                }`}>{e.confidence}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Failure log */}
+        <Side label="07 failure log" />
+        <div className="lg:col-span-9 space-y-6">
+          <p className="mono text-[12px] text-[var(--fg-muted)] mb-2">What broke, what changed, what I learned.</p>
+          {(cs as CaseStudyWithExtras).failureLog?.map((f, i) => (
+            <div key={i} className="border border-[var(--rule)] p-5 md:p-6 space-y-3">
+              <div className="flex gap-3">
+                <span className="mono text-[10px] uppercase tracking-[0.14em] text-[var(--accent)] shrink-0 pt-[3px]">broke</span>
+                <p className="text-[15px] text-[var(--fg)]">{f.what}</p>
+              </div>
+              <div className="flex gap-3">
+                <span className="mono text-[10px] uppercase tracking-[0.14em] text-[var(--fg-muted)] shrink-0 pt-[3px]">fixed</span>
+                <p className="text-[15px] text-[var(--fg)]">{f.changed}</p>
+              </div>
+              <div className="flex gap-3 border-t border-[var(--rule)] pt-3">
+                <span className="mono text-[10px] uppercase tracking-[0.14em] text-[var(--fg-muted)] shrink-0 pt-[3px]">lesson</span>
+                <p className="text-[14px] italic text-[var(--fg-muted)]">{f.learned}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </Container>
 
       {/* Footer next-link */}

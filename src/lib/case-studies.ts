@@ -52,6 +52,16 @@ Formatting is preserved by walking the .docx tree directly rather than going thr
       ],
       different: `If I were starting over, I would invest in evals from day one — a small held-out set of real letters per language, with human-graded translations, run on every model and prompt change. We built evals reactively after a few near-misses. They should have been the first commit.`,
     },
+    evidence: [
+      { metric: "24h → ~5 minutes", proof: "Internal workflow benchmark", confidence: "Measured" },
+      { metric: "18+ languages",     proof: "Language config matrix",        confidence: "Verified" },
+      { metric: "0 protected fields corrupted", proof: "QA review of 50+ real letters", confidence: "Verified" },
+    ],
+    failureLog: [
+      { what: "Single-agent approach corrupted member IDs", changed: "Split into analyze + translate agents", learned: "Protecting structured data needs to be its own step, not a prompt instruction." },
+      { what: "Plain-text extraction broke Word formatting", changed: "Switched to in-place .docx tree traversal", learned: "Flattening a document to translate it destroys the contract with the end user." },
+      { what: "No evals until production near-misses", changed: "Added a QA review round per language", learned: "Evals should be the first commit, not a patch after the first scare." },
+    ],
   },
 
   "healthcare-rag-assistant": {
@@ -89,6 +99,15 @@ The UI is intentionally boring: upload, ask, read the answer with [p.42]-style c
       ],
       different: `I would add a small evaluation harness — a fixed set of questions per document with known correct page citations — so I can tell when a model swap or a chunking change quietly regresses retrieval. Right now the feedback loop is "try it and see," which does not scale.`,
     },
+    evidence: [
+      { metric: "0 API keys required",   proof: "Runs fully offline",                confidence: "Verified" },
+      { metric: "Page-level citations",   proof: "Every answer links to source page", confidence: "By design" },
+      { metric: "100% local inference",   proof: "No outbound network calls in demo", confidence: "Measured" },
+    ],
+    failureLog: [
+      { what: "Paragraph-level chunks produced citations users couldn't find", changed: "Switched to page-level chunking", learned: "Citations are only useful if a human can act on them." },
+      { what: "Model answered confidently with no supporting chunk", changed: "Added refuse-if-confidence-low instruction", learned: "A wrong answer with confident phrasing is worse than a refusal." },
+    ],
   },
 
   "standup-report-generator": {
@@ -124,6 +143,15 @@ The UI is intentionally boring: upload, ask, read the answer with [p.42]-style c
       ],
       different: `Speaker diarization is the weakest link. Next iteration would either ingest properly diarized transcripts directly from the meeting tool or use a small specialised model for that step instead of leaning on the LLM to guess.`,
     },
+    evidence: [
+      { metric: "Per-speaker structured output",  proof: "Live demo on real transcript",     confidence: "Demonstrated" },
+      { metric: "Auto action-item extraction",    proof: "Schema-driven extraction pass",    confidence: "By design" },
+      { metric: "Single paste UX",                proof: "No pre-formatting required",       confidence: "Verified" },
+    ],
+    failureLog: [
+      { what: "Single-prompt approach mixed up speakers", changed: "Split into grouping then extraction steps", learned: "Each step being debuggable independently saves more time than a single clever prompt." },
+      { what: "Summary was generated before per-speaker extraction", changed: "Made summary a derived view over structured data", learned: "Structure first, prose second — always." },
+    ],
   },
 
   "employee-management-system": {
@@ -159,6 +187,15 @@ The UI is intentionally boring: upload, ask, read the answer with [p.42]-style c
       ],
       different: `I would add an end-to-end integration test suite earlier, and I would push the analytics out of the main app into a small read model. Most reporting pain in EMS-style systems comes from running queries against the same tables the app writes to.`,
     },
+    evidence: [
+      { metric: "4 clean layers (Domain/App/Infra/Web)", proof: "Code review — no framework leakage into domain", confidence: "Verified" },
+      { metric: "Full repo on GitHub with README",       proof: "Architecture walkthrough in README",            confidence: "Public" },
+      { metric: "Production-grade validation + errors",  proof: "Middleware + response model design",            confidence: "By design" },
+    ],
+    failureLog: [
+      { what: "EF Core types leaking into domain early on", changed: "Enforced strict dependency rule via interfaces", learned: "Clean architecture only works if the boundary is a hard constraint, not a guideline." },
+      { what: "Analytics queries hitting write tables directly", changed: "Flagged for read-model refactor in next iteration", learned: "Read and write models should diverge early; retrofitting later is painful." },
+    ],
   },
 } as const;
 

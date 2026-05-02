@@ -3,6 +3,9 @@ import { Fraunces, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { SiteProvider } from "@/lib/site-context";
+import { CommandPalette } from "@/components/CommandPalette";
+import { RecruiterMode } from "@/components/RecruiterMode";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -64,15 +67,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${fraunces.variable} ${interTight.variable} ${jetbrains.variable}`}
     >
       <body>
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 mono text-[12px] bg-[var(--accent)] text-[var(--bg)] px-3 py-2"
-        >
-          skip to content
-        </a>
-        <Nav />
-        <main id="main">{children}</main>
-        <Footer />
+        <SiteProvider>
+          <a
+            href="#main"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 mono text-[12px] bg-[var(--accent)] text-[var(--bg)] px-3 py-2"
+          >
+            skip to content
+          </a>
+          <Nav />
+          <main id="main">{children}</main>
+          <Footer />
+          <CommandPalette />
+          <RecruiterMode />
+        </SiteProvider>
       </body>
     </html>
   );
